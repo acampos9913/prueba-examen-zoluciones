@@ -44,8 +44,12 @@ functions:
           method: get
           cors: true
       - http:
-          path: /{proxy+}
-          method: ANY
+          path: /api/listar
+          method: get
+          cors: true
+      - http:
+          path: /api/guardar
+          method: post
           cors: true
 resources:
   Resources:
@@ -64,3 +68,6 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.tableName}
+
+plugins:
+  - serverless-offline

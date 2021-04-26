@@ -180,7 +180,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/examen/dev/1619393928334-2021-04-25T23:38:48.334Z/examen.zip"
+          "S3Key": "serverless/examen/dev/1619420216987-2021-04-26T06:56:56.987Z/examen.zip"
         },
         "Handler": "handler.handler",
         "Runtime": "nodejs12.x",
@@ -203,14 +203,14 @@
         "AppLogGroup"
       ]
     },
-    "AppLambdaVersionUy1n2zp0dpIeWOgWAdycudNFfUCmZPDaPaPqRb4IkEI": {
+    "AppLambdaVersionW4DaIUDzXoEJVfnfhWvtg6LbmKjx8BzNmgn6w8VENE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "AppLambdaFunction"
         },
-        "CodeSha256": "ih42JqePtBew+u0KJUa7S5VzBg+dvq8nUpoVJESQ1LI="
+        "CodeSha256": "EwtSqtS8rn5MPSD4bL9yQkmfOCT1SMfwmuFx9qw3vEw="
       }
     },
     "ApiGatewayRestApi": {
@@ -252,16 +252,25 @@
         }
       }
     },
-    "ApiGatewayResourceProxyVar": {
+    "ApiGatewayResourceApiListar": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
-          "Fn::GetAtt": [
-            "ApiGatewayRestApi",
-            "RootResourceId"
-          ]
+          "Ref": "ApiGatewayResourceApi"
         },
-        "PathPart": "{proxy+}",
+        "PathPart": "listar",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceApiGuardar": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceApi"
+        },
+        "PathPart": "guardar",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -312,7 +321,7 @@
         }
       }
     },
-    "ApiGatewayMethodProxyVarOptions": {
+    "ApiGatewayMethodApiListarOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "AuthorizationType": "NONE",
@@ -341,7 +350,7 @@
               "ResponseParameters": {
                 "method.response.header.Access-Control-Allow-Origin": "'*'",
                 "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,GET,HEAD,PATCH,POST,PUT'"
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
               },
               "ResponseTemplates": {
                 "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
@@ -350,7 +359,52 @@
           ]
         },
         "ResourceId": {
-          "Ref": "ApiGatewayResourceProxyVar"
+          "Ref": "ApiGatewayResourceApiListar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodApiGuardarOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "ResponseTemplates": {
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiGuardar"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -400,13 +454,13 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayMethodProxyVarAny": {
+    "ApiGatewayMethodApiListarGet": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "HttpMethod": "ANY",
+        "HttpMethod": "GET",
         "RequestParameters": {},
         "ResourceId": {
-          "Ref": "ApiGatewayResourceProxyVar"
+          "Ref": "ApiGatewayResourceApiListar"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -443,7 +497,50 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1619393922938": {
+    "ApiGatewayMethodApiGuardarPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceApiGuardar"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "AppLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      }
+    },
+    "ApiGatewayDeployment1619420162647": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -453,9 +550,11 @@
       },
       "DependsOn": [
         "ApiGatewayMethodApiGetswapiOptions",
-        "ApiGatewayMethodProxyVarOptions",
+        "ApiGatewayMethodApiListarOptions",
+        "ApiGatewayMethodApiGuardarOptions",
         "ApiGatewayMethodApiGetswapiGet",
-        "ApiGatewayMethodProxyVarAny"
+        "ApiGatewayMethodApiListarGet",
+        "ApiGatewayMethodApiGuardarPost"
       ]
     },
     "AppLambdaPermissionApiGateway": {
@@ -530,7 +629,7 @@
     "AppLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "AppLambdaVersionUy1n2zp0dpIeWOgWAdycudNFfUCmZPDaPaPqRb4IkEI"
+        "Ref": "AppLambdaVersionW4DaIUDzXoEJVfnfhWvtg6LbmKjx8BzNmgn6w8VENE"
       },
       "Export": {
         "Name": "sls-examen-dev-AppLambdaFunctionQualifiedArn"

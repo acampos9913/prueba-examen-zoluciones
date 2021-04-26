@@ -12,6 +12,7 @@ exports.ctrlsGetSwapi = (req, res, next) => {
           next(new Error(err));
       });
 };
+
 async function getSwapiST(item) {
   try {
       return await ctrlsGetSwapiTP(item);

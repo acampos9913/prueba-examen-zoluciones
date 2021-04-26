@@ -7,7 +7,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
 const { ctrlsGetSwapi, ctrlGetDynamo, ctrlPostDinamo} = require('./controller');
-
+const app = express();
 /* const {
     routes: userRoutes,
 } = require('./user/routes'); */
@@ -25,12 +25,10 @@ const swaggerOptions={
             servers:["http://localhost:3000"]
         }
     },
-    apis:["index.js"]
+    apis:["src/index.js"]
 }
 const swaggerDocs=swaggerJSDoc(swaggerOptions);
 app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerDocs));
-
-const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -67,7 +65,7 @@ ctrlsGetSwapi,
  *    500:
  *     description: error
  */
-app.get('/api/users/:userId', 
+app.get('/api/listar', 
 ctrlGetDynamo, 
     (req, res) => res.json(res.data)
 );
@@ -89,7 +87,7 @@ ctrlGetDynamo,
   *    500:
   *     description: users in creating employee
   */
-app.post('/api/users', 
+app.post('/api/guardar', 
 ctrlPostDinamo, 
     (req, res) => res.json(res.data)
 );

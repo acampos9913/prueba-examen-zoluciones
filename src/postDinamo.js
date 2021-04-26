@@ -7,7 +7,9 @@ exports.ctrlPostDinamoTP = item => MiFuncion(item);
 
 async function MiFuncion(item) {
     try {
-        const { userId, name } = item;
+        const userId = item.userId;
+        const name = item.name;
+        console.log(name)
         const params = {
             TableName: USERS_TABLE,
             Item: {
@@ -17,12 +19,11 @@ async function MiFuncion(item) {
             };
         dynamoDb.put(params, (error) => {
             if (error) {
-                console.log(error);
-                return res.status(400).json({ error: `No se a podido crear el usuario ${userId}` });
+                throw error;
             }
-            return res.json({ userId, name });
+            return JSON.stringify({ userId, name });
             
-            });
+        });
     } catch (error) {
       throw error;
     }

@@ -4,12 +4,8 @@ exports.ctrlsGetSwapiTP = item => MiFuncion(item);
 
 async function MiFuncion(item) {
     try {
-        axios.get("https://swapi.py4e.com/api/films/")
-        .then(function(response) {
-            return response.data
-        }).catch(function(error) {
-            throw error;
-        })
+        const res = await axios.get("https://swapi.py4e.com/api/films/");
+        return JSON.stringify(res.data);
     } catch (error) {
       throw error;
     }

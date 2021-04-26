@@ -7,6 +7,7 @@ exports.ctrlGetDynamoTP = item => MiFuncion(item);
 
 async function MiFuncion(item) {
     try {
+        console.log(item.userId)
         const params = {
             TableName: USERS_TABLE,
             Key: {
@@ -15,15 +16,14 @@ async function MiFuncion(item) {
           }
         dynamoDb.get(params, (error, result) => {
             if (error) {
-              console.log(error);
-              return res.status(400).json({ error: `No se ha podido crear el usuario ${userId}` });
+                throw error;
             }
             if (result.Item) {
               const {userId, name} = result.Item;
               
-              return res.json({ userId, name });
+              return JSON.stringify({ userId, name });
             } else {
-              return res.status(404).json({ error: `Usuario ${userId} no fue encontrado` });
+                throw error;
             }
           });
     } catch (error) {
